@@ -89,7 +89,10 @@ def _extract_patches(conandata: dict[str, Any]) -> dict[str, list[str]]:
 def _parse_conanfile(source_code: str) -> dict[str, Any]:
     # Finds the class derived from ConanFile and
     # extracts all class attributes that are simple literals
-    tree = ast.parse(source_code)
+    try:
+        tree = ast.parse(source_code)
+    except SyntaxError:
+        return {}
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef):
             for base in node.bases:
